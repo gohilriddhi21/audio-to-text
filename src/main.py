@@ -2,6 +2,10 @@ import os
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
 import speech_recognition as sr
+import logging 
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging = logging.getLogger(__name__)
 
 def transcribe_audio_chunks(chunks):
     """
