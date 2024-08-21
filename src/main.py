@@ -4,6 +4,7 @@ from pydub import AudioSegment
 from pydub.silence import split_on_silence
 import speech_recognition as sr
 from tempfile import TemporaryDirectory
+from llm_model import TextSummarizerModel
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -19,26 +20,29 @@ def transcribe_audio_chunks(chunks):
         str: The transcribed text from all audio chunks.
     """
     recognizer = sr.Recognizer()
-    full_text = ""
+    full_text = []
     
     with TemporaryDirectory() as temp_dir:
         for i, chunk in enumerate(chunks):
+            text = ""
             chunk_filename = os.path.join(temp_dir, f"chunk_{i}.wav")
             try:
                 chunk.export(chunk_filename, format="wav")
                 with sr.AudioFile(chunk_filename) as source:
                     audio = recognizer.record(source)
                 text = recognizer.recognize_google(audio)
-                full_text += text + " "
+                full_text.append(text)
             except sr.UnknownValueError:
-                full_text += "[Unintelligible] "
+                full_text.append("...")
             except sr.RequestError as e:
                 logger.error(f"Could not request results from the speech recognition service; {e}")
             except Exception as e:
                 logger.error(f"Failed to process chunk {i}: {e}")
-    return full_text.strip()
+            finally:
+                logger.debug(f"Chunk {i}: {text}")
+    return full_text
 
-def split_audio(wav_file, min_silence_len=500, silence_thresh=-35):
+def split_audio(wav_file, min_silence_len=300, silence_thresh=-35):
     """
     Splits an audio file into chunks based on periods of silence.
 
@@ -59,7 +63,7 @@ def split_audio(wav_file, min_silence_len=500, silence_thresh=-35):
         chunks = split_on_silence(audio,
                                   min_silence_len=min_silence_len,
                                   silence_thresh=silence_thresh,
-                                  keep_silence=300)
+                                  keep_silence=500)
         if not chunks:
             raise ValueError("No chunks were generated. The audio might be too continuous or the silence threshold is too low.")
         logger.info(f"Audio file split into {len(chunks)} chunks.")
@@ -104,10 +108,11 @@ def extract_text(audio_file):
         chunks = split_audio(output_file)
         if chunks:
             transcribed_text = transcribe_audio_chunks(chunks)
+            logger.debug(f"Transcribed text: {transcribed_text}")
             return transcribed_text
         else:
-            logger.warning(f"No chunks were generated for {output_file}")
-    return "Failed to process audio file"
+            logger.error(f"No chunks were generated for {output_file}")
+    return None
 
 def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
     """Processes all audio files in a directory.
@@ -125,7 +130,8 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
                 os.makedirs(transcribed_files_dir, exist_ok=True)
                 output_file = os.path.join(transcribed_files_dir, os.path.splitext(file_name)[0] + ".txt")
                 with open(output_file, "w") as f:
-                    f.write(transcribed_text)
+                    for line in transcribed_text:
+                        f.write(line + " ")
                 logger.info(f"Transcription saved to {output_file}")
             else:
                 logger.error(f"Failed to transcribe {audio_file}")
@@ -133,4 +139,8 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
 if __name__ == "__main__":
     audio_files_dir = "audio_files"
     transcribed_files_dir = "transcribed_text_files"
-    process_audio_files_in_directory(audio_files_dir, transcribed_files_dir)
+    # process_audio_files_in_directory(audio_files_dir, transcribed_files_dir)
+    model = TextSummarizerModel()
+    for file in os.listdir(transcribed_files_dir):
+        summary = model.summarize_text(os.path.join(transcribed_files_dir, file))
+        print("\nSummarisation :", summary)
