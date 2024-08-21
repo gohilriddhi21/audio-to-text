@@ -4,17 +4,24 @@ from pydub.silence import split_on_silence
 import speech_recognition as sr
 
 def transcribe_audio_chunks(chunks):
-    chunks_dir = "chunks"
-    os.makedirs(chunks_dir, exist_ok=True)
-    
+    """
+    Transcribes a list of audio chunks using Google's Speech Recognition API.
+
+    Args:
+        chunks (list): A list of AudioSegment objects representing audio chunks.
+
+    Returns:
+        str: The transcribed text from all audio chunks.
+    """
     recognizer = sr.Recognizer()
     full_text = ""
+    chunks_dir = "chunks"
+    os.makedirs(chunks_dir, exist_ok=True)
+
     for i, chunk in enumerate(chunks):
         text = ""
-        if chunks is None:
-            continue
+        chunk_filename = os.path.join(chunks_dir, f"chunk_{i}.wav")
         try:
-            chunk_filename = f"{chunks_dir}/chunk_{i}.wav"
             chunk.export(chunk_filename, format="wav")
             with sr.AudioFile(chunk_filename) as source:
                 audio = recognizer.record(source)
@@ -28,9 +35,23 @@ def transcribe_audio_chunks(chunks):
             print(f"Failed to process chunk {i}: {e}")
         finally:
             os.remove(chunk_filename)
-    return full_text
+    return full_text.strip()
 
 def split_audio(wav_file, min_silence_len=500, silence_thresh=-35):
+    """
+    Splits an audio file into chunks based on periods of silence.
+
+    Args:
+        wav_file (str): The path to the input WAV file.
+        min_silence_len (int, optional): Minimum length of silence (in milliseconds) to consider for splitting. Defaults to 500.
+        silence_thresh (int, optional): Silence threshold (in dB) for splitting. Defaults to -35.
+
+    Raises:
+        ValueError: If no chunks are generated from the audio file.
+
+    Returns:
+        list: A list of AudioSegment objects representing the audio chunks.
+    """
     try:
         print("Chunking audio file...This might take a few minutes...")
         audio = AudioSegment.from_wav(wav_file)
@@ -48,10 +69,10 @@ def split_audio(wav_file, min_silence_len=500, silence_thresh=-35):
 
 
 def convert_mp3(mp3_file, output_dir="wav_files", output_format="wav"):
-    """Converts an audio file to the specified format and saves it to the specified directory.
+    """Converts an MP3 audio file to the specified format and saves it to the specified directory.
 
     Args:
-        input_file (str): The path to the input audio file (.mp3).
+        mp3_file (str): The path to the input audio file (.mp3).
         output_dir (str, optional): The directory to save the converted audio file. Defaults to "wav_files".
         output_format (str, optional): The desired output format. Defaults to "wav".
 
@@ -100,7 +121,7 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
 
     Args:
         audio_files_dir (str): The path to the directory containing audio files.
-        output_dir (str): The path to the directory where the transcribed text files will be saved.
+        transcribed_files_dir (str): The path to the directory where the transcribed text files will be saved.
     """
 
     for file_name in os.listdir(audio_files_dir):
