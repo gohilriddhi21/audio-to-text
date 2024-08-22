@@ -65,5 +65,4 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git commit -m "Updated Summarised files"
-          git push
+          git diff-index --quiet HEAD || (git commit -a -m "updated summarisation in file" --allow-empty)

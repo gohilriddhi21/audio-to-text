@@ -9,6 +9,14 @@ from tempfile import TemporaryDirectory
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+def temp_function(filename):
+    with sr.AudioFile(filename) as source:
+        r = sr.Recognizer()
+        audio_data = r.record(source)
+        text = r.recognize_google(audio_data)
+        print(text)
+        
+    
 def transcribe_audio_chunks(chunks):
     """
     Transcribes a list of audio chunks using Google's Speech Recognition API.
@@ -104,14 +112,16 @@ def extract_text(audio_file):
         str: The transcribed text.
     """
     output_file = convert_mp3(audio_file)
-    if output_file:
-        chunks = split_audio(output_file)
-        if chunks:
-            transcribed_text = transcribe_audio_chunks(chunks)
-            logger.debug(f"Transcribed text: {transcribed_text}")
-            return transcribed_text
-        else:
-            logger.error(f"No chunks were generated for {output_file}")
+    transcribed_text = temp_function(output_file)
+    return transcribed_text
+    # if output_file:
+    #     chunks = split_audio(output_file)
+    #     if chunks:
+    #         transcribed_text = transcribe_audio_chunks(chunks)
+    #         logger.debug(f"Transcribed text: {transcribed_text}")
+    #         return transcribed_text
+    #     else:
+    #         logger.error(f"No chunks were generated for {output_file}")
     return None
 
 def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
