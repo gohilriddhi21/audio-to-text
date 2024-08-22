@@ -54,10 +54,9 @@ def process_files_in_directory(transcribed_file_dir):
             logging.info("Processing file %s", file_path)
 
             text = preprocessor.read_file(file_path)
-            print(text)
 
             preprocessed_text = preprocessor.preprocess(text)
-            print("Preprocessed: \n",preprocessed_text)
+            logging.debug("Preprocessed text: %s", preprocessed_text)
 
             preprocessor.save_preprocessed_text(preprocessed_text, file_path)
             logging.info("Saved Preprocessed text.")

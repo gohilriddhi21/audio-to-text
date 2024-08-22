@@ -56,6 +56,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      
+      - name: Take Pull
+        run: |
+          git pull
           
       - name: Execute Python script
         run: |
