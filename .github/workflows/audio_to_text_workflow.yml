@@ -33,6 +33,13 @@ jobs:
         run: |
           python src/transcription.py
 
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "updated transcribed files" --allow-empty)
+
   summarize_text:
     runs-on: ubuntu-latest
     steps:
@@ -63,3 +70,10 @@ jobs:
           python src/summarization.py
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "updated summarised files" --allow-empty)
