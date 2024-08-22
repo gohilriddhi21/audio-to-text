@@ -20,7 +20,7 @@ jobs:
         run: |
           pylint $(git ls-files '*.py')
 
-  transcribe_audio:
+  transcribe-audio:
     needs: linting
     runs-on: ubuntu-latest
     steps:
@@ -48,8 +48,29 @@ jobs:
           git diff-index --quiet HEAD || (git commit -a -m "updated transcribed file" --allow-empty)
           git push
 
-  summarize_text:
-    needs: transcribe_audio
+  preprocess-text:
+    needs: transcribe-audio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          
+      - name: Execute Python script
+        run: |
+          python src/preprocessor.py
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "updated transcribed file" --allow-empty)
+          git push
+
+  summarize-text:
+    needs: preprocess-text
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

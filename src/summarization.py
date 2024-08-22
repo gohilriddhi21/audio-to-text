@@ -1,4 +1,4 @@
-"""Summarizes the transcribed text using an LLM model."""
+"""Text Summarization Module for summarizing transcribed text files."""
 import os
 import logging
 from langchain.chains.summarize import load_summarize_chain
