@@ -15,8 +15,8 @@ def temp_function(filename):
         audio_data = r.record(source)
         text = r.recognize_google(audio_data)
         print(text)
-        
-    
+
+
 def transcribe_audio_chunks(chunks):
     """
     Transcribes a list of audio chunks using Google's Speech Recognition API.
