@@ -41,6 +41,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           git diff-index HEAD || (git commit -a -m "updated transcribed files")
+          git push
 
   # summarize_text:
   #   needs: transcribe_audio
