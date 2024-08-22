@@ -19,7 +19,6 @@ jobs:
       - name: Linting
         run: |
           pylint $(git ls-files '*.py')
-        # continue-on-error: true
 
   transcribe_audio:
     needs: linting
