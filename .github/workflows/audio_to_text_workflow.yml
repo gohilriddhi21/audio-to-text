@@ -45,7 +45,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated transcribed file" --allow-empty)
+          git diff-index --quiet HEAD || (git commit -a -m "created transcribed file" --allow-empty)
           git push
 
   preprocess-text:
@@ -107,7 +107,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated summarisation in file" --allow-empty)
+          git diff-index --quiet HEAD || (git commit -a -m "updated summarisation in transcribed file" --allow-empty)
       
       - name: Push changes
         uses: ad-m/github-push-action@master
