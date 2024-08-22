@@ -4,14 +4,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  transcribe_audio:
+  linting:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo content
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install packages and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+          
+      - name: Linting
+        run: |
+          pylint $(git ls-files '*.py')
+        continue-on-error: true
 
-      - name: Set up python
-        uses: actions/setup-python@v5
+  transcribe_audio:
+    needs: linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           
@@ -38,18 +53,15 @@ jobs:
     needs: transcribe_audio
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo content
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
       - name: Take Pull
         run: |
           git pull
 
-      - name: Set up python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-          
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip
