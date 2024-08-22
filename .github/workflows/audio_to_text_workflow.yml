@@ -40,9 +40,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index HEAD || (git commit -a -m "updated transcribed files")
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git commit -m "Add transcribed text files"
+          git push
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # summarize_text:
   #   needs: transcribe_audio
