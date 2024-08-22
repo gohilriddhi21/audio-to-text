@@ -10,11 +10,14 @@ logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %
 logger = logging.getLogger(__name__)
 
 def temp_function(filename):
-    with sr.AudioFile(filename) as source:
-        r = sr.Recognizer()
-        audio_data = r.record(source)
-        text = r.recognize_google(audio_data)
-        print(text)
+    try:
+        with sr.AudioFile(filename) as source:
+            r = sr.Recognizer()
+            audio_data = r.record(source)
+            text = r.recognize_google(audio_data)
+            print(text)
+    except Exception as e:
+        logger.error(f"Error when transcribing the wav file: {e}")
 
 
 def transcribe_audio_chunks(chunks):
