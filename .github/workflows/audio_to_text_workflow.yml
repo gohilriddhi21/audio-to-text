@@ -32,6 +32,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated transcribed file" --allow-empty)
+          git push
 
   summarize_text:
     needs: transcribe_audio
@@ -66,3 +67,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated summarisation in file" --allow-empty)
+          git push
