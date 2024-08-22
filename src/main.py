@@ -21,7 +21,6 @@ def transcribe_audio_chunks(chunks):
     """
     recognizer = sr.Recognizer()
     full_text = []
-    
     with TemporaryDirectory() as temp_dir:
         for i, chunk in enumerate(chunks):
             text = ""
