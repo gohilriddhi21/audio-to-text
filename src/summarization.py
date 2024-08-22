@@ -19,7 +19,7 @@ class TextSummarizerModel:
     
     def save_summarization_to_file(self, file_name, summary):
         with open(file_name, "a") as f:
-            f.write("\n\Summarization: \n")
+            f.write("\n\nSummarization: \n")
             f.write(summary)
 
 def process_files_in_directory(transcribed_files_dir):
