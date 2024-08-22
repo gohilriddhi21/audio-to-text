@@ -1,0 +1,6 @@
+pylint
+SpeechRecognition
+pydub
+langchain_community 
+langchain_core 
+langchain_openai
