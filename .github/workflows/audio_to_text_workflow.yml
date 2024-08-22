@@ -41,6 +41,7 @@ jobs:
           git diff-index --quiet HEAD || (git commit -a -m "updated transcribed files" --allow-empty)
 
   summarize_text:
+    needs: transcribe_audio
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo content
