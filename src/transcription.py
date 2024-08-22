@@ -4,7 +4,6 @@ from pydub import AudioSegment
 from pydub.silence import split_on_silence
 import speech_recognition as sr
 from tempfile import TemporaryDirectory
-from src.summarization import TextSummarizerModel
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -125,11 +124,12 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
         if file_name.endswith(".mp3"):
             audio_file = os.path.join(audio_files_dir, file_name)
             logger.info(f"Processing {audio_file}")
+            
             transcribed_text = extract_text(audio_file)
             if transcribed_text:
                 os.makedirs(transcribed_files_dir, exist_ok=True)
                 output_file = os.path.join(transcribed_files_dir, os.path.splitext(file_name)[0] + ".txt")
-                with open(output_file, "w") as f:
+                with open(output_file, "w") as f: 
                     f.write("Transcribed Text: \n")
                     for line in transcribed_text:
                         f.write(line + " ")
@@ -141,11 +141,3 @@ if __name__ == "__main__":
     audio_files_dir = "audio_files"
     transcribed_files_dir = "transcribed_text_files"
     process_audio_files_in_directory(audio_files_dir, transcribed_files_dir)
-    model = TextSummarizerModel()
-    for file in os.listdir(transcribed_files_dir):
-        file_name = os.path.join(transcribed_files_dir, file)
-        summary = model.summarize_text(file_name)
-        print("\nSummarisation :", summary)
-        with open(file_name, "a") as f:
-            f.write("\n\nSummarisation: \n")
-            f.write(summary)
