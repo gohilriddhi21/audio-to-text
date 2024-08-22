@@ -15,7 +15,7 @@ def temp_function(filename):
             r = sr.Recognizer()
             audio_data = r.record(source)
             text = r.recognize_google(audio_data)
-            print(text)
+            return text
     except Exception as e:
         logger.error(f"Error when transcribing the wav file: {e}")
 
@@ -125,7 +125,7 @@ def extract_text(audio_file):
     #         return transcribed_text
     #     else:
     #         logger.error(f"No chunks were generated for {output_file}")
-    return None
+    # return None
 
 def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
     """Processes all audio files in a directory.
