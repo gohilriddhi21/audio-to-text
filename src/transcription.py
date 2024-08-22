@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-def transcribe_audio_chunks(chunks):
+def transcribe_audio(chunks):
     """
     Transcribes a list of audio chunks using Google's Speech Recognition API.
 
@@ -72,7 +72,7 @@ def split_audio(wav_file, min_silence_len=300, silence_thresh=-35):
         logger.error(f"Failed to split {wav_file} into chunks: {e}")
         sys.exit()
 
-def convert_mp3(mp3_file, output_dir="wav_files", output_format="wav"):
+def convert_audio(mp3_file, output_dir="wav_files", output_format="wav"):
     """Converts an MP3 audio file to the specified format and saves it to the specified directory.
 
     Args:
@@ -84,17 +84,17 @@ def convert_mp3(mp3_file, output_dir="wav_files", output_format="wav"):
         str: The path to the converted audio file.
     """
     try:
-        os.makedirs(output_dir, exist_ok=True)
-        audio = AudioSegment.from_file(mp3_file)
         output_file = os.path.join(output_dir, os.path.basename(mp3_file).replace(".mp3", f".{output_format}"))
         if not os.path.exists(output_file):
+            os.makedirs(output_dir, exist_ok=True)
+            audio = AudioSegment.from_file(mp3_file)
             audio.export(output_file, format=output_format)
         return output_file
     except Exception as e:
         logger.error(f"Failed to convert {mp3_file}: {e}")
         sys.exit()
 
-def extract_text(audio_file):
+def convert_split_transcribe_audio(audio_file):
     """Processes an audio file by converting it to WAV, splitting it into chunks, and transcribing each chunk.
 
     Args:
@@ -103,11 +103,11 @@ def extract_text(audio_file):
     Returns:
         str: The transcribed text.
     """
-    output_file = convert_mp3(audio_file)
+    output_file = convert_audio(audio_file)
     if output_file:
         chunks = split_audio(output_file)
         if chunks:
-            transcribed_text = transcribe_audio_chunks(chunks)
+            transcribed_text = transcribe_audio(chunks)
             logger.debug(f"Transcribed text: {transcribed_text}")
             return transcribed_text
         else:
@@ -126,7 +126,7 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
             audio_file = os.path.join(audio_files_dir, file_name)
             logger.info(f"Processing {audio_file}")
             
-            transcribed_text = extract_text(audio_file)
+            transcribed_text = convert_split_transcribe_audio(audio_file)
             if transcribed_text:
                 os.makedirs(transcribed_files_dir, exist_ok=True)
                 output_file = os.path.join(transcribed_files_dir, os.path.splitext(file_name)[0] + ".txt")
