@@ -7,9 +7,9 @@ from pydub import AudioSegment
 from pydub.silence import split_on_silence
 import speech_recognition as sr
 
-
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 def transcribe_audio(chunks):
     """Transcribes a list of audio chunks using Google's Speech Recognition API."""
@@ -35,6 +35,7 @@ def transcribe_audio(chunks):
                 logger.debug("Chunk %d: %s", i, text)
     return full_text
 
+
 def split_audio(wav_file, min_silence_len=300, silence_thresh=-35):
     """Splits an audio file into chunks based on periods of silence."""
     try:
@@ -52,6 +53,7 @@ def split_audio(wav_file, min_silence_len=300, silence_thresh=-35):
         logger.error("Failed to split %s into chunks: %s", wav_file, e)
         sys.exit()
 
+
 def convert_audio(mp3_file, output_dir="wav_files", output_format="wav"):
     """Converts an MP3 file to the specified format and saves it to the specified directory."""
     try:
@@ -65,6 +67,7 @@ def convert_audio(mp3_file, output_dir="wav_files", output_format="wav"):
     except Exception as e: #pylint: disable=broad-except
         logger.error("Failed to convert %s: %s", mp3_file, e)
         sys.exit()
+
 
 def convert_split_transcribe_audio(audio_file):
     """Converts .mp3 to .wav, splits it into chunks, and transcribes each chunk."""
@@ -87,7 +90,6 @@ def convert_split_transcribe_audio(audio_file):
     return transcribed_text
 
 
-
 def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
     """Processes all audio files in a directory."""
     for file_name in os.listdir(audio_files_dir):
@@ -106,6 +108,7 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
                 logger.info("Transcription saved to %s", output_file)
             else:
                 logger.error("Failed to transcribe %s", audio_file)
+
 
 if __name__ == "__main__":
     AUDIO_FILES_DIR = "audio_files"
