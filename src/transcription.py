@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
@@ -69,7 +70,7 @@ def split_audio(wav_file, min_silence_len=300, silence_thresh=-35):
         return chunks
     except Exception as e:
         logger.error(f"Failed to split {wav_file} into chunks: {e}")
-        return None
+        sys.exit()
 
 def convert_mp3(mp3_file, output_dir="wav_files", output_format="wav"):
     """Converts an MP3 audio file to the specified format and saves it to the specified directory.
@@ -91,7 +92,7 @@ def convert_mp3(mp3_file, output_dir="wav_files", output_format="wav"):
         return output_file
     except Exception as e:
         logger.error(f"Failed to convert {mp3_file}: {e}")
-        return None
+        sys.exit()
 
 def extract_text(audio_file):
     """Processes an audio file by converting it to WAV, splitting it into chunks, and transcribing each chunk.
