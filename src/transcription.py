@@ -126,7 +126,8 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
             audio_file = os.path.join(audio_files_dir, file_name)
             logger.info(f"Processing {audio_file}")
             
-            transcribed_text = extract_text(audio_file)
+            # transcribed_text = extract_text(audio_file)
+            transcribed_text = "Testing"
             if transcribed_text:
                 os.makedirs(transcribed_files_dir, exist_ok=True)
                 output_file = os.path.join(transcribed_files_dir, os.path.splitext(file_name)[0] + ".txt")
