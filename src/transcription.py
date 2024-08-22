@@ -130,9 +130,6 @@ def process_audio_files_in_directory(audio_files_dir, transcribed_files_dir):
             if transcribed_text:
                 os.makedirs(transcribed_files_dir, exist_ok=True)
                 output_file = os.path.join(transcribed_files_dir, os.path.splitext(file_name)[0] + ".txt")
-                # Added to remove the file if it already exists to avoid failure due to commit
-                if os.path.exists(output_file):
-                    os.remove(output_file)
                 with open(output_file, "w") as f: 
                     f.write("Transcribed Text: \n")
                     for line in transcribed_text:
