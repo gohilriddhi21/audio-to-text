@@ -40,7 +40,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated transcribed files" --allow-empty)
+          git diff-index HEAD || (git commit -a -m "updated transcribed files")
 
   summarize_text:
     needs: transcribe_audio
@@ -57,7 +57,7 @@ jobs:
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install langchain_community langchain_core
+          pip install langchain_community langchain_core langchain_openai
       
       # - name: Analysing the code with pylint
       #   run: |
@@ -79,4 +79,4 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated summarised files" --allow-empty)
+          git diff-index HEAD || (git commit -a -m "updated summarised files")
