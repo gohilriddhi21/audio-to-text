@@ -39,8 +39,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add transcribed_text_files/*
-          git commit -m "updated transcribed files"
+          git add -A
+          git diff-index HEAD || (git commit -a -m "updated transcribed files")
 
   # summarize_text:
   #   needs: transcribe_audio
