@@ -41,6 +41,10 @@ jobs:
       - name: Checkout repo content
         uses: actions/checkout@v4
 
+      - name: Take Pull
+        run: |
+          git pull
+
       - name: Set up python
         uses: actions/setup-python@v5
         with:
@@ -62,6 +66,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git pull
           git commit -m "Updated Summarised files"
           git push
